@@ -2,7 +2,7 @@
 
 -- Koda za zapis zidu ima 8 števil za zunanje ter 4 za notranje povezave.
 blk = { FS ="110000000000", --Full Side
-		HS ="010000000000", --Hald Side
+		HS ="010000000000", --Half Side
 		ZZ ="100000001100", --ZigZag
 		TB ="110000001000", --T-block
 		TLL="100000001000", --TopLeft L
@@ -54,7 +54,7 @@ function drawInner( x, y, size, blkInner)
 			elseif iter == 2 then
 				love.graphics.rectangle( "fill", x + size/2 - size/32, y + size/2 - size/32, size/2 + size/32, size/16);
 			elseif iter == 3 then
-				love.graphics.rectangle( "fill", x + size/2 - size/32, y, size/16, size/2 - size/32);
+				love.graphics.rectangle( "fill", x + size/2 - size/32, y, size/16, size/2 + size/32);
 			end
 		end
 		iter = iter + 1
@@ -63,10 +63,9 @@ end
 
 function drawBlk( x, y, size, wallCode, orientation)
 	love.graphics.setColor(255,255,255)
-	love.graphics.rectangle( "line", x         , y         , size/2, size/2)
-	love.graphics.rectangle( "line", x + size/2, y         , size/2, size/2)
-	love.graphics.rectangle( "line", x         , y + size/2, size/2, size/2)
-	love.graphics.rectangle( "line", x + size/2, y + size/2, size/2, size/2)
+	love.graphics.rectangle( "line", x         , y         , size, size)
+	love.graphics.line( x + size/2 , y         , x + size/2, y + size)
+	love.graphics.line( x          , y + size/2, x + size  , y + size/2)
 
 	local blkCode = blkRotate( wallCode, orientation)
 	local blkOuter = blkCode:sub( 1, 8 )
@@ -84,7 +83,7 @@ function love.update( dt )
 end
 
 function love.draw()
-	drawBlk( 0, 0, 200, blk.ZZ, 4)
+	drawBlk( 0, 0, 200, blk.TB, 3)
 end
 
 function love.keypressed( key, scancode, isrepeat )
