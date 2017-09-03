@@ -78,3 +78,19 @@ function drawBlks( width, height, size, permutation, orientation)
 		end
 	end
 end
+
+function genPermutations( width, height, blk)
+	local permutation = {}
+	for i=1,width*height do
+		table.insert( permutation, blk[m.random( 1, #blk)])
+	end
+	return permutation
+end
+
+function genOrientations( width, height)
+	local orientation = {}
+	for i=1,width*height do
+		table.insert( orientation, m.random( 0, 3))
+	end
+	return orientation
+end
