@@ -1,0 +1,18 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+blkRotate	aux.lua	/^function blkRotate( wallCode, orientation )$/;"	f
+charShift	aux.lua	/^function charShift( string, n )$/;"	f
+drawBlk	aux.lua	/^function drawBlk( x, y, size, wallCode, orientation)$/;"	f
+drawBlks	aux.lua	/^function drawBlks( width, height, size, permutation, orientation)$/;"	f
+drawFig	aux.lua	/^function drawFig( pos, size, color)$/;"	f
+drawInner	aux.lua	/^function drawInner( x, y, size, blkInner)$/;"	f
+drawOuter	aux.lua	/^function drawOuter( x, y, size, blkOuter)$/;"	f
+love.draw	main.lua	/^function love.draw()$/;"	f
+love.keypressed	main.lua	/^function love.keypressed( key, scancode, isrepeat )$/;"	f
+love.load	main.lua	/^function love.load()$/;"	f
+love.mousepressed	main.lua	/^function love.mousepressed( x, y, button, istouch)$/;"	f
+love.update	main.lua	/^function love.update( dt )$/;"	f

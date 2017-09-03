@@ -2,6 +2,7 @@
 --
 
 require "init"
+require "aux"
 
 function love.load()
 	game.whitepos = { { x = 0, y = 0   },   { x = 0, y = 1 },   { x = 1, y = 0 },   { x = 1, y = 1 } }
@@ -9,30 +10,22 @@ function love.load()
 	game.size = 200
 	game.whiteColor = { r = 245, g = 222, b = 179 }
 	game.blackColor = { r = 139, g = 69, b = 19 }
-	xmidPressed = 0
-	ymidPressed = 0
-	xmouse = 0
-	ymouse = 0
+	xpos = 0
+	ypos = 0
 end
 
 function love.update( dt )
-	if love.mouse.isDown( 3 ) then
-		xmouse, ymouse = love.mouse.getPosition()
-	end
+	-- if love.mouse.isDown( 3 ) then
+	-- 	xpos, ypos = love.mouse.getPosition()
+	-- end
 end
 
 function love.draw()
-	love.graphics.translate( xmouse - xmidPressed, ymouse - ymidPressed)
+	-- love.graphics.translate( xpos, ypos)
 
-	drawBlk( 0, 0, game.size, blk.TB, 3)
-	drawBlk( game.size, 0, game.size, blk.ZZ, 3)
-	drawBlk( 0, game.size, game.size, blk.ZZ, 2)
-	drawBlk( game.size, game.size, game.size, blk.TB, 0)
-	drawBlk( 2*game.size, 0, game.size, blk.TB, 0)
-	drawBlk( 2*game.size, game.size, game.size, blk.TB, 0)
-	drawBlk( 2*game.size, 2*game.size, game.size, blk.TB, 0)
-	drawBlk( 0, 2*game.size, game.size, blk.TB, 0)
-	drawBlk( game.size, 2*game.size, game.size, blk.TB, 0)
+	drawBlks( 3, 3, game.size, 
+			{ blk.TB, blk.HS, blk.FS, blk.TLL, blk.BRL, blk.ZZ, blk.TRL, blk.TLL, blk.HS},
+			{ 2,3,1,0,2,3,1,1,2 })
 
 	for _,fig in ipairs(game.whitepos) do
 		drawFig( fig, game.size, game.whiteColor )
@@ -54,8 +47,5 @@ function love.mousepressed( x, y, button, istouch)
 	end
 	if button == 2 then
 		print("to je 2")
-	end
-	if button == 3 then
-		xmidPressed,ymidPressed = love.mouse.getPosition()
 	end
 end
