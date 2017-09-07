@@ -1,3 +1,5 @@
+-- Zamakne niz stevil, na tak nacin, da
+-- jih vrti v krogu (ciklicno)
 function charShift( string, n )
 	return string:sub( n+1 )..string:sub( 1, n )
 end
@@ -11,6 +13,7 @@ function blkRotate( wallCode, orientation )
 	return outer..inner
 end
 
+-- Narise zid okoli bloka
 function drawOuter( x, y, size, blkOuter)
 	love.graphics.setColor(0,0,255)
 	local iter = 0
@@ -30,6 +33,7 @@ function drawOuter( x, y, size, blkOuter)
 	end
 end
 
+-- Narise zid v notranjosti bloka
 function drawInner( x, y, size, blkInner)
 	love.graphics.setColor(0,0,255)
 	local iter = 0
@@ -49,6 +53,7 @@ function drawInner( x, y, size, blkInner)
 	end
 end
 
+-- Narise en blok
 function drawBlk( x, y, size, wallCode, orientation)
 	love.graphics.setColor(255,255,255)
 	love.graphics.rectangle( "line", x         , y         , size, size)
@@ -64,11 +69,13 @@ function drawBlk( x, y, size, wallCode, orientation)
 
 end
 
+-- Narise eno figuro
 function drawFig( pos, size, color)
 	love.graphics.setColor( color.r, color.g, color.b)
 	love.graphics.circle( "fill", pos.x*(size/2)+size/4, pos.y*(size/2)+size/4, size/8)
 end
 
+-- Narise vse bloke v pravilnih orientacijah
 function drawBlks( width, height, size, permutation, orientation)
 	for x=0,width-1 do
 		for y=0,height-1 do
@@ -79,6 +86,7 @@ function drawBlks( width, height, size, permutation, orientation)
 	end
 end
 
+-- Generira nize kod, ki dolocajo bloke
 function genPermutations( width, height, blk)
 	local permutation = {}
 	for i=1,width*height do
@@ -87,10 +95,35 @@ function genPermutations( width, height, blk)
 	return permutation
 end
 
+-- Generira niz stevil, ki dolocajo orientacijo vseh
+-- blokov, podano v eni dimenziji
 function genOrientations( width, height)
 	local orientation = {}
 	for i=1,width*height do
 		table.insert( orientation, m.random( 0, 3))
 	end
 	return orientation
+end
+
+-- Preveri evklidsko razdaljo med dvema tockama
+function diff( x1, y1, x2, y2)
+	return m.sqrt( (x1 - x2)^2 + (y1 - y2)^2 )
+end
+
+-- Pridobi x in y pozicijo figurice
+function getXYFig( color, number, size)
+	if color == "white" then
+		return { size/4 + game.whitepos[number].x*size/2, size/4 + game.whitepos[number].y*size/2 }
+	else
+		return { size/4 + game.blackpos[number].x*size/2, size/4 + game.blackpos[number].y*size/2 }
+	end
+end
+
+-- Oznaci neko figurico kot izbrano/neizbrano
+function selectedFig( color, number, selected, size)
+	if color == "white" then
+		game.whitepos[number].s = selected
+	else
+		game.blackpos[number].s = selected
+	end
 end
