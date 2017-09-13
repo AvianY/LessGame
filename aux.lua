@@ -119,11 +119,25 @@ function getXYFig( color, number, size)
 	end
 end
 
--- Oznaci neko figurico kot izbrano/neizbrano
+-- Oznaci (preklopni nacin) neko figurico kot izbrano/neizbrano
 function selectedFig( color, number, selected, size)
+	clearSelection( color )
 	if color == "white" then
 		game.whitepos[number].s = selected
 	else
 		game.blackpos[number].s = selected
+	end
+end
+
+-- Ponastavi izbranost figur
+function clearSelection( color )
+	if color == "white" then
+		for k,_ in ipairs(game.whitepos) do
+			game.whitepos[k].s = 0
+		end
+	else
+		for k,_ in ipairs(game.blackpos) do
+			game.blackpos[k].s = 0
+		end
 	end
 end

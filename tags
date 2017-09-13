@@ -6,13 +6,18 @@
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 blkRotate	aux.lua	/^function blkRotate( wallCode, orientation )$/;"	f
 charShift	aux.lua	/^function charShift( string, n )$/;"	f
+diff	aux.lua	/^function diff( x1, y1, x2, y2)$/;"	f
 drawBlk	aux.lua	/^function drawBlk( x, y, size, wallCode, orientation)$/;"	f
 drawBlks	aux.lua	/^function drawBlks( width, height, size, permutation, orientation)$/;"	f
 drawFig	aux.lua	/^function drawFig( pos, size, color)$/;"	f
 drawInner	aux.lua	/^function drawInner( x, y, size, blkInner)$/;"	f
 drawOuter	aux.lua	/^function drawOuter( x, y, size, blkOuter)$/;"	f
+genOrientations	aux.lua	/^function genOrientations( width, height)$/;"	f
+genPermutations	aux.lua	/^function genPermutations( width, height, blk)$/;"	f
+getXYFig	aux.lua	/^function getXYFig( color, number, size)$/;"	f
 love.draw	main.lua	/^function love.draw()$/;"	f
 love.keypressed	main.lua	/^function love.keypressed( key, scancode, isrepeat )$/;"	f
 love.load	main.lua	/^function love.load()$/;"	f
 love.mousepressed	main.lua	/^function love.mousepressed( x, y, button, istouch)$/;"	f
 love.update	main.lua	/^function love.update( dt )$/;"	f
+selectedFig	aux.lua	/^function selectedFig( color, number, selected, size)$/;"	f
