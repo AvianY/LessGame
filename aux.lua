@@ -69,12 +69,6 @@ function drawBlk( x, y, size, wallCode, orientation)
 
 end
 
--- Narise eno figuro
-function drawFig( pos, size, color)
-	love.graphics.setColor( color.r, color.g, color.b)
-	love.graphics.circle( "fill", pos.x*(size/2)+size/4, pos.y*(size/2)+size/4, size/8)
-end
-
 -- Narise vse bloke v pravilnih orientacijah
 function drawBlks( width, height, size, permutation, orientation)
 	for x=0,width-1 do
@@ -119,42 +113,23 @@ function getXYFig( color, number, size)
 	end
 end
 
--- Oznaci (edinstveni nacin) neko figurico kot izbrano/neizbrano
-function selectedFig( color, number, selected, size)
-	clearSelection( color )
-	if color == "white" then
-		game.whitepos[number].s = selected
-	else
-		game.blackpos[number].s = selected
-	end
+-- Narise eno figuro
+function drawFig( pos, size, color)
+	love.graphics.setColor( color.r, color.g, color.b)
+	love.graphics.circle( "fill", pos.x*(size/2)+size/4, pos.y*(size/2)+size/4, size/8)
 end
 
--- Oznaci (preklopni nacin) neko figurico kot izbrano/neizbrano
-function toggleFig( color, number, size)
-	if color == "white" then
-		if game.whitepos[number].s == 1 then
-			game.whitepos[number].s = 0
-		else
-			game.whitepos[number].s = 1
-		end
-	else
-		if game.blackpos[number].s == 1 then
-			game.blackpos[number].s = 0
-		else
-			game.blackpos[number].s = 1
-		end
+-- Narisi vse figure na polje
+function drawFigs( whitepos, blackpos, selectedFig, turn, size )
+	for fig=1,4 do
+		drawFig( whitepos[fig], size, game.whiteColor )
+		drawFig( blackpos[fig], size, game.blackColor )
 	end
-end
-
--- Ponastavi izbranost figur
-function clearSelection( color )
-	if color == "white" then
-		for k,_ in ipairs(game.whitepos) do
-			game.whitepos[k].s = 0
-		end
-	else
-		for k,_ in ipairs(game.blackpos) do
-			game.blackpos[k].s = 0
+	if selectedFig > 0 then
+		if turn == "white" then
+			drawFig( whitepos[selectedFig], size, game.selectedColor )
+		else
+			drawFig( blackpos[selectedFig], size, game.selectedColor )
 		end
 	end
 end

@@ -7,14 +7,15 @@ m = require "math"
 
 function love.load()
 	m.randomseed( os.time())
-	game.whitepos = { { x = 0, y = 0, s = 0 },   { x = 0, y = 1, s = 0 }, { x = 1, y = 0, s = 0 }, { x = 1, y = 1, s = 0 } }
-	game.blackpos = { { x = 5, y = 5, s = 0 },   { x = 5, y = 4, s = 0 }, { x = 4, y = 5, s = 0 }, { x = 4, y = 4, s = 0 } }
+	game.whitepos = { { x = 0, y = 0 },   { x = 0, y = 1 }, { x = 1, y = 0 }, { x = 1, y = 1 } }
+	game.blackpos = { { x = 5, y = 5 },   { x = 5, y = 4 }, { x = 4, y = 5 }, { x = 4, y = 4 } }
 	game.size = 200
 	game.width = 3
 	game.height = 3
 	game.whiteColor = { r = 245, g = 222, b = 179 }
 	game.blackColor = { r = 139, g = 69, b = 19 }
 	game.selectedColor = { r = 0, g = 255, b = 0 }
+	game.selectedFig = 0 -- Ce je vec od nic, pove katera figura je izbrana, sicer pa da ni nobena
 	game.permutation = genPermutations( game.width, game.height, blk)
 	game.orientation = genOrientations( game.width, game.height)
 	game.turn = "white"
@@ -37,20 +38,8 @@ function love.draw()
 	-- 		{ blk.TB, blk.HS, blk.FS, blk.TLL, blk.BRL, blk.ZZ, blk.TRL, blk.TLL, blk.HS},
 	-- 		{ 2,3,1,0,2,3,1,1,2 })
 
-	for _,fig in ipairs(game.whitepos) do
-		if fig.s == 0 then
-			drawFig( fig, game.size, game.whiteColor )
-		else
-			drawFig( fig, game.size, game.selectedColor )
-		end
-	end
-	for _,fig in ipairs(game.blackpos) do
-		if fig.s == 0 then
-			drawFig( fig, game.size, game.blackColor )
-		else
-			drawFig( fig, game.size, game.selectedColor )
-		end
-	end
+	drawFigs( game.whitepos, game.blackpos, game.selectedFig, game.turn, game.size )
+
 end
 
 function love.keypressed( key, scancode, isrepeat )
@@ -64,7 +53,7 @@ function love.mousepressed( x, y, button, istouch)
 		for fig=1,4 do
 			local pos = getXYFig( game.turn, fig, game.size)
 			if diff( x, y, pos[1], pos[2] ) < game.size/8 then
-				selectedFig( game.turn, fig, 1, game.size)
+				game.selectedFig = fig
 			end
 		end
 	end
