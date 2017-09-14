@@ -133,3 +133,11 @@ function drawFigs( whitepos, blackpos, selectedFig, turn, size )
 		end
 	end
 end
+
+-- Premakni figuro
+function moveFig( fig, x, y, size )
+	if x < 0 or x > game.width*size or y > game.height*size then
+		return
+	end
+	game.selectedFig = 0
+end

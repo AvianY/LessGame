@@ -50,11 +50,16 @@ end
 
 function love.mousepressed( x, y, button, istouch)
 	if button == 1 then
+		local clickOnFig = 0
 		for fig=1,4 do
 			local pos = getXYFig( game.turn, fig, game.size)
 			if diff( x, y, pos[1], pos[2] ) < game.size/8 then
 				game.selectedFig = fig
+				clickOnFig = 1
 			end
+		end
+		if clickOnFig == 0 and game.selectedFig > 0 then
+			moveFig( game.selectedFig, x, y, game.size )
 		end
 	end
 	if button == 2 then
