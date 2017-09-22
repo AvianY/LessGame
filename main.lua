@@ -34,7 +34,7 @@ function love.draw()
 
 	drawBlks( game.width, game.height, game.size, game.permutation, game.orientation)
 
-	-- drawBlks( 3, 3, game.size, 
+	-- drawBlks( 3, 3, game.size,
 	-- 		{ blk.TB, blk.HS, blk.FS, blk.TLL, blk.BRL, blk.ZZ, blk.TRL, blk.TLL, blk.HS},
 	-- 		{ 2,3,1,0,2,3,1,1,2 })
 
@@ -59,7 +59,7 @@ function love.mousepressed( x, y, button, istouch)
 			end
 		end
 		if clickOnFig == 0 and game.selectedFig > 0 then
-			moveFig( game.selectedFig, x, y, game.size )
+			moveFig( game.selectedFig, game.turn, x, y, game.whitepos, game.blackpos, game.width, game.height, game.size)
 		end
 	end
 	if button == 2 then

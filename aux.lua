@@ -135,9 +135,48 @@ function drawFigs( whitepos, blackpos, selectedFig, turn, size )
 end
 
 -- Premakni figuro
-function moveFig( fig, x, y, size )
+function moveFig( fig, turn, x, y, wpos, bpos, width, height, size)
+	-- Preveri, ce je kliknjeno na plosco
 	if x < 0 or x > game.width*size or y > game.height*size then
+		game.selectedFig = 0
 		return
 	end
-	game.selectedFig = 0
+	local oldPos = getOldPos( fig, turn)
+	local newPos = getNewPos( x, y, size)
+	print( oldPos.x, oldPos.y, newPos.x, newPos.y)
+	-- Preveri, ce je izbrano polje po diagonali
+	if m.abs( oldPos.x - newPos.x ) > 0 and m.abs( oldPos.y - newPos.y ) > 0  then
+		game.selectedFig = 0
+		return
+	end
+	-- Preveri, ce je izbrano polje ze zasedeno
+	for ifig=1,4 do
+		if (wpos[ifig].x == newPos.x and wpos[ifig].y == newPos.y) or
+				(bpos[ifig].x == newPos.x and bpos[ifig].y == newPos.y) then
+			game.selectedFig = 0
+			return
+		end
+	end
+	if turn == "white" then
+		game.whitepos[fig].x = newPos.x
+		game.whitepos[fig].y = newPos.y
+	else
+		game.blackpos[fig].x = newPos.x
+		game.blackpos[fig].y = newPos.y
+	end
+end
+
+-- Pridobi pozicijo (koordinate) figure na plosci glede na x,y
+function getNewPos( x, y, size)
+	return { x=m.floor(x/(size/2)), y=m.floor(y/(size/2)) }
+end
+
+-- Pridobi pozicijo (koordinate) figure na plosci glede na stevilko
+-- figure
+function getOldPos( fig, turn )
+	if turn == "white" then
+		return { x=game.whitepos[fig].x, y=game.whitepos[fig].y }
+	else
+		return { x=game.blackpos[fig].x, y=game.blackpos[fig].y }
+	end
 end
