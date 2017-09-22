@@ -157,6 +157,23 @@ function moveFig( fig, turn, x, y, wpos, bpos, width, height, size)
 			return
 		end
 	end
+	if m.abs( oldPos.x - newPos.x ) > 2 or
+			m.abs( oldPos.y - newPos.y ) > 2 then
+		game.selectedFig = 0
+		return
+	end
+	if m.abs( oldPos.x - newPos.x ) == 2 then
+		if not isFigure( (oldPos.x + newPos.x)/2, (oldPos.y + newPos.y)/2, size ) then
+			game.selectedFig = 0
+			return
+		end
+	elseif m.abs( oldPos.y - newPos.y ) == 2 then
+		if not isFigure( (oldPos.x + newPos.x)/2, (oldPos.y + newPos.y)/2, size ) then
+			game.selectedFig = 0
+			return
+		end
+	end
+	-- Premakni figuro
 	if turn == "white" then
 		game.whitepos[fig].x = newPos.x
 		game.whitepos[fig].y = newPos.y
@@ -179,4 +196,17 @@ function getOldPos( fig, turn )
 	else
 		return { x=game.blackpos[fig].x, y=game.blackpos[fig].y }
 	end
+end
+
+-- Preveri ali obstaja figura na nekem specificnem mestu
+function isFigure( xpos, ypos, size)
+	for fig=1,4 do
+		if game.whitepos[fig].x == xpos and game.whitepos[fig].y == ypos then
+			return true
+		end
+		if game.blackpos[fig].x == xpos and game.blackpos[fig].y == ypos then
+			return true
+		end
+	end
+	return false
 end
