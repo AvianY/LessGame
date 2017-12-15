@@ -157,18 +157,19 @@ function moveFig( fig, turn, x, y, wpos, bpos, width, height, size)
 			return
 		end
 	end
+	-- Preveri, ce je polje stran za vec kot dve mesti
 	if m.abs( oldPos.x - newPos.x ) > 2 or
 			m.abs( oldPos.y - newPos.y ) > 2 then
 		game.selectedFig = 0
 		return
 	end
-	if m.abs( oldPos.x - newPos.x ) == 2 then
+	-- Preveri, ce preskakujemo figuro ali ne
+	if m.abs( oldPos.x - newPos.x ) == 2 or m.abs( oldPos.y - newPos.y ) == 2 then
 		if not isFigure( (oldPos.x + newPos.x)/2, (oldPos.y + newPos.y)/2, size ) then
 			game.selectedFig = 0
 			return
-		end
-	elseif m.abs( oldPos.y - newPos.y ) == 2 then
-		if not isFigure( (oldPos.x + newPos.x)/2, (oldPos.y + newPos.y)/2, size ) then
+		-- Ce je zid na poti, prekini potezo
+		if numWall( oldPos, oldPos ) then
 			game.selectedFig = 0
 			return
 		end
@@ -209,4 +210,18 @@ function isFigure( xpos, ypos, size)
 		end
 	end
 	return false
+end
+
+function numWall( oldpos, newpos )
+	N = max( (newpos.x - oldpos.x), (newpos.y, oldpos.y) )
+	for step=1,N do
+		truncOldPos = [oldpos.x % 2, oldpos.y % 2]
+		truncNewPos = [newpos.x % 2, newpos.y % 2]
+		if (newpos.y - oldpos.y) == 0 then
+			k
+		else
+		oldpos = [ oldpos.x + step, oldpos.y + step ]
+		newpos = [ newpos.x + step, newpos.y + step ]
+		end
+	end
 end

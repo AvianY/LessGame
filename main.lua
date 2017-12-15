@@ -50,6 +50,7 @@ end
 
 function love.mousepressed( x, y, button, istouch)
 	if button == 1 then
+		-- V kombinaciji s for zanko, ki ga lahko iznici
 		local clickOnFig = 0
 		for fig=1,4 do
 			local pos = getXYFig( game.turn, fig, game.size)
