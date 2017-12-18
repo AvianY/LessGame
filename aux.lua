@@ -54,30 +54,54 @@ function drawInner( x, y, size, blkInner)
 end
 
 -- Narise en blok
-function drawBlk( x, y, size, wallCode, orientation)
+function drawBlk( x, y, size, wallCode)
 	love.graphics.setColor(255,255,255)
 	love.graphics.rectangle( "line", x         , y         , size, size)
 	love.graphics.line( x + size/2 , y         , x + size/2, y + size)
 	love.graphics.line( x          , y + size/2, x + size  , y + size/2)
 
-	local blkCode = blkRotate( wallCode, orientation)
-	local blkOuter = blkCode:sub( 1, 8 )
-	local blkInner = blkCode:sub( 9, 12 )
+	-- local blkCode = blkRotate( wallCode, orientation)
+	local blkOuter = wallCode:sub( 1, 8 )
+	local blkInner = wallCode:sub( 9, 12 )
 
 	drawOuter( x, y, size, blkOuter )
 	drawInner( x, y, size, blkInner )
 
 end
 
--- Narise vse bloke v pravilnih orientacijah
-function drawBlks( width, height, size, permutation, orientation)
+function genBlockCodes( width, height, permutation, orientation )
+	local blkCodes = { {}, {}, {} }
 	for x=0,width-1 do
 		for y=0,height-1 do
-			drawBlk( x*size, y*size, size,
-					permutation[y*width + x + 1],
-					orientation[y*width + x + 1] )
+			blkCodes[x][y] = blkRotate( permutation[y*width + x + 1],
+										orientation[y*width + x + 1])
 		end
 	end
+	return blkCodes
+end
+
+-- Narise vse bloke v pravilnih orientacijah
+-- Shrani kode zidov za vse bloke
+function drawBlks( width, height, size, permutation, orientation)
+	blkCodes = genBlockCodes( width, height, permutation, orientation )
+	for x=0,width-1 do
+		for y=0,height-1 do
+			-- drawBlk( x*size, y*size, size,
+			-- 		permutation[y*width + x + 1],
+			-- 		orientation[y*width + x + 1] )
+			drawBlk( x*size, y*size, size,
+					blkCodes[x][y] )
+		end
+	end
+end
+
+-- Generira nize kod, ki dolocajo bloke
+function genPermutations( width, height, blk)
+	local permutation = {}
+	for i=1,width*height do
+		table.insert( permutation, blk[m.random( 1, #blk)])
+	end
+	return permutation
 end
 
 -- Generira nize kod, ki dolocajo bloke
@@ -168,11 +192,12 @@ function moveFig( fig, turn, x, y, wpos, bpos, width, height, size)
 		if not isFigure( (oldPos.x + newPos.x)/2, (oldPos.y + newPos.y)/2, size ) then
 			game.selectedFig = 0
 			return
-		-- Ce je zid na poti, prekini potezo
-		if numWall( oldPos, oldPos ) then
-			game.selectedFig = 0
-			return
 		end
+		-- -- Ce je zid na poti, prekini potezo
+		-- if numWall( oldPos, oldPos ) then
+		-- 	game.selectedFig = 0
+		-- 	return
+		-- end
 	end
 	-- Premakni figuro
 	if turn == "white" then
@@ -212,16 +237,29 @@ function isFigure( xpos, ypos, size)
 	return false
 end
 
-function numWall( oldpos, newpos )
-	N = max( (newpos.x - oldpos.x), (newpos.y, oldpos.y) )
-	for step=1,N do
-		truncOldPos = [oldpos.x % 2, oldpos.y % 2]
-		truncNewPos = [newpos.x % 2, newpos.y % 2]
-		if (newpos.y - oldpos.y) == 0 then
-			k
-		else
-		oldpos = [ oldpos.x + step, oldpos.y + step ]
-		newpos = [ newpos.x + step, newpos.y + step ]
-		end
-	end
-end
+-- -- Pridobi stevilo zidov na poti od zacetka do konca
+-- function numWall( oldpos, newpos )
+-- 	N = max( (newpos.x - oldpos.x), (newpos.y, oldpos.y) )
+-- 	for step=1,N do
+-- 		truncOldPos = [oldpos.x % 2, oldpos.y % 2]
+-- 		truncNewPos = [newpos.x % 2, newpos.y % 2]
+-- 		if (newpos.y - oldpos.y) == 0 then
+-- 			k
+-- 		else
+-- 		oldpos = [ oldpos.x + step, oldpos.y + step ]
+-- 		newpos = [ newpos.x + step, newpos.y + step ]
+-- 		end
+-- 	end
+-- end
+
+-- -- Pridobi stevilo zidov na enem koraku
+-- function numWallSingle( oldpos, newpos )
+-- 	-- Truncated _ old/new position
+-- 	blok = [ x = ]
+-- 	t_op = [ x = oldpos.x % 2, y = oldpos.y % 2 ]
+-- 	t_np = [ x = newpos.x % 2, y = newpos.y % 2 ]
+-- 	if isInner( oldpos, newpos ) then
+-- 		if t_op.x == 0 and t_np.y == 0 then
+-- 			return 
+-- 		end
+-- 	else
