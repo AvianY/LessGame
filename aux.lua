@@ -69,11 +69,12 @@ function drawBlk( x, y, size, wallCode)
 
 end
 
+-- Generira matriko, ki vsebuje kode zidov, z upostevanjem orientacije
 function genBlockCodes( width, height, permutation, orientation )
 	local blkCodes = { {}, {}, {} }
-	for x=0,width-1 do
-		for y=0,height-1 do
-			blkCodes[x][y] = blkRotate( permutation[y*width + x + 1],
+	for x=0,width - 1 do
+		for y=0,height - 1 do
+			blkCodes[x+1][y+1] = blkRotate( permutation[y*width + x + 1],
 										orientation[y*width + x + 1])
 		end
 	end
@@ -86,11 +87,8 @@ function drawBlks( width, height, size, permutation, orientation)
 	blkCodes = genBlockCodes( width, height, permutation, orientation )
 	for x=0,width-1 do
 		for y=0,height-1 do
-			-- drawBlk( x*size, y*size, size,
-			-- 		permutation[y*width + x + 1],
-			-- 		orientation[y*width + x + 1] )
 			drawBlk( x*size, y*size, size,
-					blkCodes[x][y] )
+					blkCodes[x+1][y+1] )
 		end
 	end
 end
@@ -260,7 +258,7 @@ end
 -- 	t_np = [ x = newpos.x % 2, y = newpos.y % 2 ]
 -- 	if isInner( oldpos, newpos ) then
 -- 		if t_op.x == 0 and t_np.y == 0 then
--- 			return 
+-- 			return
 -- 		end
 -- 	else
 -- 	neki
