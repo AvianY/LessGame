@@ -1,3 +1,4 @@
+m =  require "math"
 -- Zamakne niz stevil, na tak nacin, da
 -- jih vrti v krogu (ciklicno)
 function charShift( string, n )
@@ -165,7 +166,6 @@ function moveFig( fig, turn, x, y, wpos, bpos, width, height, size)
 	end
 	local oldPos = getOldPos( fig, turn)
 	local newPos = getNewPos( x, y, size)
-	print( oldPos.x, oldPos.y, newPos.x, newPos.y)
 	-- Preveri, ce je izbrano polje po diagonali
 	if m.abs( oldPos.x - newPos.x ) > 0 and m.abs( oldPos.y - newPos.y ) > 0  then
 		game.selectedFig = 0
@@ -191,19 +191,39 @@ function moveFig( fig, turn, x, y, wpos, bpos, width, height, size)
 			game.selectedFig = 0
 			return
 		end
-		-- -- Ce je zid na poti, prekini potezo
-		-- if numWall( oldPos, oldPos ) then
-		-- 	game.selectedFig = 0
-		-- 	return
-		-- end
+		-- Ce je zid na poti, prekini potezo
+		if numWall( oldPos, newPos )>0 then
+			game.selectedFig = 0
+			return
+		end
 	end
 	-- Premakni figuro
 	if turn == "white" then
-		game.whitepos[fig].x = newPos.x
-		game.whitepos[fig].y = newPos.y
+		if game.whiteMoves > numWall( oldPos, newPos ) then
+			game.whiteMoves = game.whiteMoves - numWall( oldPos, newPos ) - 1
+			game.whitepos[fig].x = newPos.x
+			game.whitepos[fig].y = newPos.y
+			if game.whiteMoves == 0 then
+				game.turn = "black"
+				game.blackMoves = 3
+			end
+		else
+			game.selectedFig = 0
+			return
+		end
 	else
-		game.blackpos[fig].x = newPos.x
-		game.blackpos[fig].y = newPos.y
+		if game.blackMoves > numWall( oldPos, newPos ) then
+			game.blackMoves = game.blackMoves - numWall( oldPos, newPos ) - 1
+			game.blackpos[fig].x = newPos.x
+			game.blackpos[fig].y = newPos.y
+			if game.blackMoves == 0 then
+				game.turn = "white"
+				game.whiteMoves = 3
+			end
+		else
+			game.selectedFig = 0
+			return
+		end
 	end
 end
 
@@ -235,30 +255,79 @@ function isFigure( xpos, ypos, size)
 	return false
 end
 
--- -- Pridobi stevilo zidov na poti od zacetka do konca
--- function numWall( oldpos, newpos )
--- 	N = max( (newpos.x - oldpos.x), (newpos.y, oldpos.y) )
--- 	for step=1,N do
--- 		truncOldPos = [oldpos.x % 2, oldpos.y % 2]
--- 		truncNewPos = [newpos.x % 2, newpos.y % 2]
--- 		if (newpos.y - oldpos.y) == 0 then
--- 			k
--- 		else
--- 		oldpos = [ oldpos.x + step, oldpos.y + step ]
--- 		newpos = [ newpos.x + step, newpos.y + step ]
--- 		end
--- 	end
--- end
+-- Pridobi stevilo zidov na poti od zacetka do konca
+function numWall( oldpos, newpos )
+	local N = m.max( m.abs(newpos.x - oldpos.x), m.abs(newpos.y - oldpos.y) )
+	-- Pridobimo korak (en od njiju je itak enak 0), delimo z N, ker hočemo dobit enko
+	local xdiff = (newpos.x - oldpos.x)/N
+	local ydiff = (newpos.y - oldpos.y)/N
+	local sumwall = 0
+	local oldIncPos = { x = oldpos.x, y = oldpos.y}
+	local newIncPos = { x = oldpos.x + xdiff, y = oldpos.y + ydiff }
+	for step=1,N do
+		sumwall = sumwall + numWallSingle( oldIncPos, newIncPos )
+		oldIncPos = { x=newIncPos.x, y=newIncPos.y }
+		newIncPos = { x=oldIncPos.x + step*xdiff, y=oldIncPos.y + step*ydiff }
+	end
+	return sumwall
+end
 
--- -- Pridobi stevilo zidov na enem koraku
--- function numWallSingle( oldpos, newpos )
--- 	-- Truncated _ old/new position
--- 	blok = [ x = ]
--- 	t_op = [ x = oldpos.x % 2, y = oldpos.y % 2 ]
--- 	t_np = [ x = newpos.x % 2, y = newpos.y % 2 ]
--- 	if isInner( oldpos, newpos ) then
--- 		if t_op.x == 0 and t_np.y == 0 then
--- 			return
--- 		end
--- 	else
--- 	neki
+-- Pridobi stevilo zidov na enem koraku
+function numWallSingle( op, np )
+	-- t_op = Truncated _ old/new position
+	-- old/new blk = blk-Coordinates of a block
+	-- dir = direction of moving (pozitive or negative
+	local oldblk = { x = m.floor(op.x/2), y = m.floor(op.y/2) }
+	local newblk = { x = m.floor(np.x/2), y = m.floor(np.y/2) }
+	local t_op = { x = op.x % 2, y = op.y % 2 }
+	local t_np = { x = np.x % 2, y = np.y % 2 }
+	local dir = ( np.x - op.x ) + ( np.y - op.y )
+	if (oldblk.x == newblk.x) and (oldblk.y == newblk.y) then
+		if t_op.x == 0 and t_np.x == 0 then
+			return blkCodes[oldblk.x+1][oldblk.y+1]:sub(9,9)
+		elseif t_op.y == 1 and t_np.y == 1 then
+			return blkCodes[oldblk.x+1][oldblk.y+1]:sub(10,10)
+		elseif t_op.x == 1 and t_np.x == 1 then
+			return blkCodes[oldblk.x+1][oldblk.y+1]:sub(11,11)
+		elseif t_op.y == 0 and t_np.y == 0 then
+			return blkCodes[oldblk.x+1][oldblk.y+1]:sub(12,12)
+		else
+			print("Pravilno slutis!!!")
+		end
+	else
+		if t_op.x == 0 and t_np.x == 0 and dir > 0 then
+			return blkCodes[oldblk.x+1][oldblk.y+1]:sub(3,3) +
+					blkCodes[newblk.x+1][newblk.y+1]:sub(8,8)
+		end
+		if t_op.x == 0 and t_np.x == 0 and dir < 0 then
+			return blkCodes[oldblk.x+1][oldblk.y+1]:sub(8,8) +
+					blkCodes[newblk.x+1][newblk.y+1]:sub(3,3)
+		end
+		if t_op.y == 1 and t_np.y == 1 and dir > 0 then
+			return blkCodes[oldblk.x+1][oldblk.y+1]:sub(5,5) +
+					blkCodes[newblk.x+1][newblk.y+1]:sub(2,2)
+		end
+		if t_op.y == 1 and t_np.y == 1 and dir < 0 then
+			return blkCodes[oldblk.x+1][oldblk.y+1]:sub(2,2) +
+					blkCodes[newblk.x+1][newblk.y+1]:sub(5,5)
+		end
+		if t_op.x == 1 and t_np.x == 1 and dir > 0 then
+			return blkCodes[oldblk.x+1][oldblk.y+1]:sub(4,4) +
+					blkCodes[newblk.x+1][newblk.y+1]:sub(7,7)
+		end
+		if t_op.x == 1 and t_np.x == 1 and dir < 0 then
+			return blkCodes[oldblk.x+1][oldblk.y+1]:sub(7,7) +
+					blkCodes[newblk.x+1][newblk.y+1]:sub(4,4)
+		end
+		if t_op.y == 0 and t_np.y == 0 and dir > 0 then
+			return blkCodes[oldblk.x+1][oldblk.y+1]:sub(6,6) +
+					blkCodes[newblk.x+1][newblk.y+1]:sub(1,1)
+		end
+		if t_op.y == 0 and t_np.y == 0 and dir < 0 then
+			return blkCodes[oldblk.x+1][oldblk.y+1]:sub(1,1) +
+					blkCodes[newblk.x+1][newblk.y+1]:sub(6,6)
+		end
+		print( "Something is terribly wrong")
+		return -1
+	end
+end

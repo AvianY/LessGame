@@ -14,6 +14,8 @@ function love.load()
 	game.height = 3
 	game.whiteColor = { r = 245, g = 222, b = 179 }
 	game.blackColor = { r = 139, g = 69, b = 19 }
+	game.whiteMoves = 3
+	game.blackMoves = 0
 	game.selectedColor = { r = 0, g = 255, b = 0 }
 	game.selectedFig = 0 -- Ce je vec od nic, pove katera figura je izbrana, sicer pa da ni nobena
 	game.permutation = genPermutations( game.width, game.height, blk)
@@ -39,6 +41,14 @@ function love.draw()
 	-- 		{ 2,3,1,0,2,3,1,1,2 })
 
 	drawFigs( game.whitepos, game.blackpos, game.selectedFig, game.turn, game.size )
+	
+	love.graphics.setColor( 255, 0, 0 )
+	if game.turn == "white" then
+		love.graphics.print( "White to move", game.size*game.width, 0 )
+	else
+		love.graphics.print( "Black to move", game.size*game.width, 0 )
+	end
+	love.graphics.print( game.whiteMoves+game.blackMoves, game.size*game.width, 10 )
 
 end
 
