@@ -201,11 +201,22 @@ function moveFig( fig, turn, x, y, wpos, bpos, width, height, size)
 	if turn == "white" then
 		if game.whiteMoves > numWall( oldPos, newPos ) then
 			game.whiteMoves = game.whiteMoves - numWall( oldPos, newPos ) - 1
+			game.totalWhite = game.totalWhite + numWall( oldPos, newPos ) + 1
 			game.whitepos[fig].x = newPos.x
 			game.whitepos[fig].y = newPos.y
-			if game.whiteMoves == 0 then
-				game.turn = "black"
-				game.blackMoves = 3
+			if isFinished( width, height, size, turn) then
+				game.finished = game.finished + 1
+			end
+			if game.whiteMoves == 0 or game.finished > 0 then
+				if game.finished == 2 then
+					game.turn = "white"
+					game.whiteMoves = 3
+					game.selectedFig = 0
+				else
+					game.turn = "black"
+					game.blackMoves = 3
+					game.selectedFig = 0
+				end
 			end
 		else
 			game.selectedFig = 0
@@ -214,17 +225,50 @@ function moveFig( fig, turn, x, y, wpos, bpos, width, height, size)
 	else
 		if game.blackMoves > numWall( oldPos, newPos ) then
 			game.blackMoves = game.blackMoves - numWall( oldPos, newPos ) - 1
+			game.totalBlack = game.totalBlack + numWall( oldPos, newPos ) + 1
 			game.blackpos[fig].x = newPos.x
 			game.blackpos[fig].y = newPos.y
-			if game.blackMoves == 0 then
-				game.turn = "white"
-				game.whiteMoves = 3
+			if isFinished( width, height, size, turn) then
+				game.finished = game.finished + 2
+			end
+			if game.blackMoves == 0 or game.finished > 0 then
+				if game.finished == 1 then
+					game.turn = "black"
+					game.blackMoves = 3
+					game.selectedFig = 0
+				else
+					game.turn = "white"
+					game.whiteMoves = 3
+					game.selectedFig = 0
+				end
 			end
 		else
 			game.selectedFig = 0
 			return
 		end
 	end
+	if game.finished == 3 then
+		game.over = 1
+	end
+end
+
+-- Ali je igralec zaključil
+function isFinished( width, height, size, turn )
+	for fig=1,4 do
+		pos = getOldPos( fig, turn )
+		if turn == "white" then
+			if pos.x < 2*width - 2 or pos.y < 2*height - 2 then
+				print(pos.x, pos.y)
+				return false
+			end
+		else
+			if pos.x > 1 or pos.y > 1 then
+				print(pos.x, pos.y)
+				return false
+			end
+		end
+	end
+	return true
 end
 
 -- Pridobi pozicijo (koordinate) figure na plosci glede na x,y

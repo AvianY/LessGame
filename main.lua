@@ -16,11 +16,15 @@ function love.load()
 	game.blackColor = { r = 139, g = 69, b = 19 }
 	game.whiteMoves = 3
 	game.blackMoves = 0
+	game.totalWhite = 0
+	game.totalBlack = 0
 	game.selectedColor = { r = 0, g = 255, b = 0 }
 	game.selectedFig = 0 -- Ce je vec od nic, pove katera figura je izbrana, sicer pa da ni nobena
 	game.permutation = genPermutations( game.width, game.height, blk)
 	game.orientation = genOrientations( game.width, game.height)
 	game.turn = "white"
+	game.over = 0
+	game.finished = 0
 	xpos = 0
 	ypos = 0
 end
@@ -41,7 +45,7 @@ function love.draw()
 	-- 		{ 2,3,1,0,2,3,1,1,2 })
 
 	drawFigs( game.whitepos, game.blackpos, game.selectedFig, game.turn, game.size )
-	
+
 	love.graphics.setColor( 255, 0, 0 )
 	if game.turn == "white" then
 		love.graphics.print( "White to move", game.size*game.width, 0 )
@@ -50,6 +54,21 @@ function love.draw()
 	end
 	love.graphics.print( game.whiteMoves+game.blackMoves, game.size*game.width, 10 )
 
+	if game.over == 1 then
+		love.graphics.setColor( 0, 255, 0 )
+		if game.totalWhite < game.totalBlack then
+			love.graphics.print( "White won with "..game.totalWhite.." moves", game.size*game.width, 20)
+			love.graphics.setColor( 0, 0, 255 )
+			love.graphics.print( "Black won with "..game.totalBlack.." moves", game.size*game.width, 30)
+		elseif game.totalWhite > game.totalBlack then
+			love.graphics.print( "Black won with "..game.totalBlack.." moves", game.size*game.width, 20)
+			love.graphics.setColor( 0, 0, 255 )
+			love.graphics.print( "White lost with "..game.totalWhite.." moves", game.size*game.width, 30)
+		else
+			love.graphics.print( "It's a draw with both having "..game.totalWhite.." moves", game.size*game.width, 20)
+			
+		end
+	end
 end
 
 function love.keypressed( key, scancode, isrepeat )
@@ -72,8 +91,5 @@ function love.mousepressed( x, y, button, istouch)
 		if clickOnFig == 0 and game.selectedFig > 0 then
 			moveFig( game.selectedFig, game.turn, x, y, game.whitepos, game.blackpos, game.width, game.height, game.size)
 		end
-	end
-	if button == 2 then
-		print("to je 2")
 	end
 end
