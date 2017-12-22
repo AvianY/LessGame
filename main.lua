@@ -2,7 +2,7 @@
 --
 
 require "init"
-require "aux"
+require "avx"
 m = require "math"
 
 function love.load()
